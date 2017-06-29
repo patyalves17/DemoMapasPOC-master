@@ -3,6 +3,9 @@ package com.example.logonpf.demomapaspoc;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.example.logonpf.demomapaspoc.api.ApiUtils;
+import com.example.logonpf.demomapaspoc.api.MetroAPI;
+import com.example.logonpf.demomapaspoc.model.Estacao;
 import com.example.logonpf.demomapaspoc.model.Linha;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -11,10 +14,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private Linha linha;
+    private Estacao estacao;
+    private MetroAPI mAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +37,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         if(getIntent()!=null){
+
+
             linha=getIntent().getParcelableExtra("Linha");
+            mAPI= ApiUtils.getMetroAPI();
+
+            mAPI.getEstacoes(linha.getCor())
+            .subscribeOn(Schedulers.io())
+            .unsubscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Subscriber<List<Estacao>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onNext(List<Estacao> estacoes) {
+
+                    for (Estacao estacao:estacoes){
+                        LatLng marcador = new LatLng(
+                                Double.parseDouble(estacao.getLatitude()),
+                                Double.parseDouble(estacao.getLongitude())
+                        );
+                        mMap.addMarker(new MarkerOptions().position(marcador).title(estacao.getNome()));
+
+                    }
+
+                }
+            });
+
+
+
         }
     }
 
@@ -45,8 +92,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        LatLng sydney = new LatLng(-23.5641085, -46.6524089);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Fiap"));
        // mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,16));
     }

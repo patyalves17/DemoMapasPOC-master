@@ -10,8 +10,8 @@ public class Estacao {
 
     private String nome;
     private String endereco;
-    private double latitude;
-    private double longitude;
+    private String latitude;
+    private String longitude;
     @SerializedName("capacidade_passageiro_hora_pico")
     private int capacidadePassageiroHoraPico;
     @SerializedName("area_construida_m_2")
@@ -36,19 +36,19 @@ public class Estacao {
         this.endereco = endereco;
     }
 
-    public double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
