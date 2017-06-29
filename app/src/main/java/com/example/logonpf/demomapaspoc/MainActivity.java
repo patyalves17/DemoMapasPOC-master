@@ -1,6 +1,7 @@
 package com.example.logonpf.demomapaspoc;
 
 import android.content.ClipData;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -43,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
                 new OnItemClickListener() {
             @Override
             public void onItemClick(Linha item) {
-                Toast.makeText(getApplicationContext(),
-                        item.getCor(), Toast.LENGTH_SHORT).show();
+                Intent telaMapa=new Intent(MainActivity.this, MapsActivity.class);
+                startActivity(telaMapa);
             }
         });
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
